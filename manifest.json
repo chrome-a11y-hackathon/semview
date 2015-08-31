@@ -1,0 +1,19 @@
+{
+  "name": "SemView",
+  "version": "0.0.1",
+  "description": "A visualisation of a page's semantics.",
+  "background": {
+    "scripts": [
+      "background.js"
+    ],
+    "persistent": false
+  },
+  "browser_action": {
+    "default_title": "Show automation tree"
+  },
+  "permissions": [
+    "activeTab"
+  ],
+  "automation": true,
+  "manifest_version": 2
+}
