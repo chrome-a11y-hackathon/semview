@@ -27,34 +27,159 @@ function createTree(automationNode, opt_parentNode, opt_indent) {
 
   switch (automationNode.role) {
   case RoleType.rootWebArea:
+    console.log(automationNode);
     node = document.body;
     break;
+
+  case RoleType.button:
+    atomic = true;
+    node = parentNode.appendChild(document.createElement("button"));
+    if (automationNode.name.trim() == "" && automationNode.description && automationNode.description.trim() != "")
+      node.appendChild(document.createTextNode(automationNode.description));
+    else
+      node.appendChild(document.createTextNode(automationNode.name));
+    break;
+
+  case RoleType.link:
+    node = parentNode.appendChild(document.createElement("a"));
+    node.href = automationNode.url;
+
+    if (automationNode.name.trim() == "" && automationNode.description && automationNode.description.trim() != "")
+      node.appendChild(document.createTextNode(automationNode.description));
+    break;
+
+
+
+  case RoleType.cell:
+    node = parentNode.appendChild(document.createElement("td"));
+    break;
+
+  case RoleType.checkBox:
+    atomic = true;
+    node = parentNode.appendChild(document.createElement("input"));
+    node.type = "checkbox";
+    node.checked = automationNode.state.checked;
+    break;
+
+  case RoleType.date:
+  case RoleType.dateTime:
+  case RoleType.time:
+    node = parentNode.appendChild(document.createElement("time"));
+    break;
+
   case RoleType.div:
     node = parentNode.appendChild(document.createElement("div"));
     break;
+
+  case RoleType.figcaption:
+    node = parentNode.appendChild(document.createElement("figcaption"));
+    break;
+
+  case RoleType.figure:
+    node = parentNode.appendChild(document.createElement("figure"));
+    break;
+
+  case RoleType.heading:
+    switch (automationNode.hierarchicalLevel) {
+    case 1:
+      node = parentNode.appendChild(document.createElement("h1"));
+      break;
+    case 2:
+      node = parentNode.appendChild(document.createElement("h2"));
+      break;
+    case 3:
+      node = parentNode.appendChild(document.createElement("h3"));
+      break;
+    case 4:
+      node = parentNode.appendChild(document.createElement("h4"));
+      break;
+    case 5:
+      node = parentNode.appendChild(document.createElement("h5"));
+      break;
+    case 6:
+    default:
+      node = parentNode.appendChild(document.createElement("h6"));
+      break;
+    }
+    break;
+
   case RoleType.image:
     atomic = true;
     node = parentNode.appendChild(document.createElement("img"));
     node.src = "";
     node.alt = automationNode.name != "" ? automationNode.name : automationNode.url ? automationNode.url.split('/').pop() : '<' + automationNode.htmlTag + '>';
     break;
-  case RoleType.link:
-    node = parentNode.appendChild(document.createElement("a"));
-    node.href = automationNode.url;
+
+  case RoleType.inputTime:
+    atomic = true;
+    node = parentNode.appendChild(document.createElement("input"));
+    node.type = "time"
+    node.value = automationNode.value;
     break;
+
   case RoleType.list:
     node = parentNode.appendChild(document.createElement(automationNode.htmlTag));
     break;
+
   case RoleType.listItem:
     node = parentNode.appendChild(document.createElement("li"));
     break;
+
   case RoleType.listMarker:
     atomic = true; // ignore list markers as the ul/ol will insert them
     break;
+
+  case RoleType.paragraph:
+    node = parentNode.appendChild(document.createElement("p"));
+    break;
+
+  case RoleType.pre:
+    node = parentNode.appendChild(document.createElement("pre"));
+    break;
+
+  case RoleType.radioButton:
+    atomic = true;
+    node = parentNode.appendChild(document.createElement("input"));
+    node.type = "radio";
+    node.checked = automationNode.state.checked;
+    break;
+
+  case RoleType.rowHeader:
+  case RoleType.columnHeader:
+    node = parentNode.appendChild(document.createElement("th"));
+    break;
+
+  case RoleType.row:
+    node = parentNode.appendChild(document.createElement("tr"));
+    break;
+
+  case RoleType.slider:
+    atomic = true;
+    node = parentNode.appendChild(document.createElement("input"));
+    node.type = "range";
+    node.min = automationNode.minValueForRange;
+    node.max = automationNode.maxValueForRange;
+    node.value = automationNode.valueForRange;
+    // TODO: valuetext
+    break;
+
   case RoleType.staticText:
     atomic = true;
     node = parentNode.appendChild(document.createTextNode(automationNode.value));
     break;
+
+  case RoleType.table:
+    node = parentNode.appendChild(document.createElement("table"));
+    break;
+
+  case RoleType.textField:
+    atomic = true;
+    node = parentNode.appendChild(document.createElement("input"));
+    node.type = "text";
+    node.value = automationNode.value;
+    break;
+
+
   case RoleType.alertDialog:
   case RoleType.alert:
   case RoleType.annotation:
@@ -63,21 +188,15 @@ function createTree(automationNode, opt_parentNode, opt_indent) {
   case RoleType.banner:
   case RoleType.blockquote:
   case RoleType.busyIndicator:
-  case RoleType.button:
   case RoleType.buttonDropDown:
   case RoleType.canvas:
   case RoleType.caption:
-  case RoleType.cell:
-  case RoleType.checkBox:
   case RoleType.client:
   case RoleType.colorWell:
-  case RoleType.columnHeader:
   case RoleType.column:
   case RoleType.comboBox:
   case RoleType.complementary:
   case RoleType.contentInfo:
-  case RoleType.date:
-  case RoleType.dateTime:
   case RoleType.definition:
   case RoleType.descriptionListDetail:
   case RoleType.descriptionList:
@@ -89,20 +208,16 @@ function createTree(automationNode, opt_parentNode, opt_indent) {
   case RoleType.disclosureTriangle:
   case RoleType.document:
   case RoleType.embeddedObject:
-  case RoleType.figcaption:
-  case RoleType.figure:
   case RoleType.footer:
   case RoleType.form:
   case RoleType.grid:
   case RoleType.group:
-  case RoleType.heading:
   case RoleType.iframe:
   case RoleType.iframePresentational:
   case RoleType.ignored:
   case RoleType.imageMapLink:
   case RoleType.imageMap:
   case RoleType.inlineTextBox:
-  case RoleType.inputTime:
   case RoleType.labelText:
   case RoleType.legend:
   case RoleType.lineBreak:
@@ -127,16 +242,11 @@ function createTree(automationNode, opt_parentNode, opt_indent) {
   case RoleType.note:
   case RoleType.outline:
   case RoleType.pane:
-  case RoleType.paragraph:
   case RoleType.popUpButton:
-  case RoleType.pre:
   case RoleType.presentational:
   case RoleType.progressIndicator:
-  case RoleType.radioButton:
   case RoleType.radioGroup:
   case RoleType.region:
-  case RoleType.rowHeader:
-  case RoleType.row:
   case RoleType.ruby:
   case RoleType.ruler:
   case RoleType.svgRoot:
@@ -145,7 +255,6 @@ function createTree(automationNode, opt_parentNode, opt_indent) {
   case RoleType.seamlessWebArea:
   case RoleType.search:
   case RoleType.searchBox:
-  case RoleType.slider:
   case RoleType.sliderThumb:
   case RoleType.spinButtonPart:
   case RoleType.spinButton:
@@ -157,9 +266,6 @@ function createTree(automationNode, opt_parentNode, opt_indent) {
   case RoleType.tabPanel:
   case RoleType.tab:
   case RoleType.tableHeaderContainer:
-  case RoleType.table:
-  case RoleType.textField:
-  case RoleType.time:
   case RoleType.timer:
   case RoleType.titleBar:
   case RoleType.toggleButton:
