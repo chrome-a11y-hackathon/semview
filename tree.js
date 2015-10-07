@@ -1,4 +1,4 @@
-function createTree(automationNode, opt_parentNode, opt_indent) {
+window.createTree = function(automationNode, opt_parentNode, opt_indent) {
   var RoleType = chrome.automation.RoleType;
 
   if (!opt_parentNode && automationNode.role != RoleType.rootWebArea)
@@ -287,7 +287,7 @@ function createTree(automationNode, opt_parentNode, opt_indent) {
     return;
 
   for (var child of automationNode.children) {
-    createTree(child, node, indent + "  ");
+    window.createTree(child, node, indent + "  ");
     node.appendChild(document.createTextNode("\n"));
   }
 }
